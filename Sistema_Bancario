@@ -1,0 +1,11 @@
+MENU = '''
+        BEM VINDO AO SISTEMA DO BANCO       
+
+[1] DEPÓSITO 
+[2] SACAR
+[3] EXTRATO
+[4] CONFIGURAR LIMITE VALOR DE SAQUE
+[0] SAIR
+
+Digite Opção Desejada:
+=> '''
