@@ -54,3 +54,20 @@ while True:
             saldo -= valor 
             extrato += f"Saque: R$ {valor:.2f} Realizado Com Sucesso!\n"
             numero_saques += 1
+
+        else:
+            print("Operação Falhou! O Valor Informado é Invalido, Valor minimo de Saque R$ 1,00.")
+
+
+    elif opcao == "3":
+        print("\n **********EXTRATO**********")
+        print(f"\nSaldo: R$ {saldo:.2f}")
+        print('Não foram relizadas movimentações.' if not extrato else extrato)
+        print("***************************")   
+
+         
+    elif opcao == "0":
+     print ("ENCERRANDO SISTEMA.... \n OBRIGADO POR SER O NOSSO CLIENTE!!! \n" )
+     break
+else:
+ print("Opção Invalida, por favor selecione novamente a opção desejada!")
