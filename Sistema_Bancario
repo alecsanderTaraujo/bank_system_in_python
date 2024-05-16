@@ -43,6 +43,7 @@ while True:
 
         if excedeu_saldo:
             print("Operação falhou! Saldo insuficiente revise o Valor de Saldo Disponivel na Conta.")
+            
 
         elif excedeu_limite:
             print("Operação falhou! Excedeu o limite do Valor de Saque.")
@@ -81,6 +82,7 @@ while True:
                 if  alteracao > NUMERO_DE_ALTERACAO:
                 
                     print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE LIMITE, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
+                    extrato += f'Tentativa de Alteração de Limite NEGADA \n'
                     print (f'Seu Limite de Saque Atual é {limite}')
                     break
 
