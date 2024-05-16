@@ -11,3 +11,4 @@
 11. Finalizado Função Extrato
 12. Adicionado e Finalizado Função Ajuste
 13. Adicionado a linha 85 do codigo "extrato += f'Tentativa de Alteração de Limite NEGADA \n'" aparecendo no Extrato tentativas negadas de alteração de limite.
+14. Saldo alterado para Rodapé do Extrato
