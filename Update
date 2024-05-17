@@ -12,3 +12,5 @@
 12. Adicionado e Finalizado Função Ajuste
 13. Adicionado a linha 85 do codigo "extrato += f'Tentativa de Alteração de Limite NEGADA \n'" aparecendo no Extrato tentativas negadas de alteração de limite.
 14. Saldo alterado para Rodapé do Extrato
+Adicionado [2] LIMITE DE SAQUES DIÁRIOS, mensagem de falha ao saque e descrição do valor de tentativa de saque  ao extrato, mensagem de alteração de limite de saque diários e limite de valor para saque ao extrato, mensagem de orientação ao Gerente ao Bloqueio de função.
+
