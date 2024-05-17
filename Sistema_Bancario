@@ -14,8 +14,10 @@ saldo = 0
 limite = 500
 numero_saques = 0
 alteracao = 0
+alteracao_saque = 0
 LIMITE_SAQUES = 3
-NUMERO_DE_ALTERACAO = 3
+NUMERO_DE_ALTERACAO_LIMITE = 3
+NUMERO_DE_ALTERACAO_DE_SAQUE = 3
 extrato = ""
 
 while True:
@@ -43,7 +45,7 @@ while True:
 
         if excedeu_saldo:
             print("Operação falhou! Saldo insuficiente revise o Valor de Saldo Disponivel na Conta.")
-            
+            extrato += f'Falha ao Tentar Realizar Saque: {valor: .2f} \n'
 
         elif excedeu_limite:
             print("Operação falhou! Excedeu o limite do Valor de Saque.")
@@ -71,34 +73,54 @@ while True:
     elif opcao == "4":
             print("   *****AJUSTE SEU LIMITE*****   ")
             AJUSTE = '''
+        
          [1] LIMITE DE VALOR DE SAQUE
-         [2] RETORNAR AO MENU PRINCIPAL
+         [2] LIMITE DE SAQUES DIÁRIOS
+         [0] RETORNAR AO MENU PRINCIPAL
+         
 
          Digite Opção Desejada:
          => '''        
             while True:
-                opcao_ajuste = input (AJUSTE) 
+                    opcao_ajuste = input (AJUSTE) 
 
-                if  alteracao > NUMERO_DE_ALTERACAO:
+                    if  alteracao > NUMERO_DE_ALTERACAO_LIMITE:
+                    
+                        print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE LIMITE, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
+                        extrato += f'Tentativa de Alteração de Limite NEGADA \n'
+                        print (f'Seu Limite de Saque Atual é {limite}')
+                        break  
+        
+                    if  opcao_ajuste == "1":
+                     print ("\n   ***AJUSTE DO LIMITE DE VALOR DE SAQUE***   ")
+                     print(f"Seu Limite de Saque Atual é {limite}")
+                     ajuste_saque = float(input("Digite o Valor para qual deseja alterar: \n"))
+                     limite = ajuste_saque
+                     alteracao += 1
+                     extrato += f'Alteração de valor de Saque Realizada para: R$ {limite:.2f}\n'
+                     print("Limite do Valor de Saque Alterado com Sucesso!")    
                 
-                    print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE LIMITE, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
-                    extrato += f'Tentativa de Alteração de Limite NEGADA \n'
-                    print (f'Seu Limite de Saque Atual é {limite}')
-                    break
+                
+                    if alteracao_saque > NUMERO_DE_ALTERACAO_DE_SAQUE:
 
-                if  opcao_ajuste == "1":
-                 print ("\n   ***AJUSTE DO LIMITE DE VALOR DE SAQUE***   ")
-                 print(f"Seu Limite de Saque Atual é {limite}")
-                 ajuste_saque = float(input("Digite o Valor para qual deseja alterar: \n"))
-                 limite = ajuste_saque
-                 alteracao += 1
-                 extrato += f'Alteração de valor de Saque Realizada para: R$ {limite:.2f}\n'
-                 print("Limite do Valor de Saque Alterado com Sucesso!")    
+                     print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE SAQUES DIÁRIO, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
+                     extrato += f'Tentativa de Alteração de SAQUE DIÁRIO NEGADA \n'
+                     print (f'Seu Limite de Saques Diário Atual é {LIMITE_SAQUES}')
+                     break   
+
+                    if  opcao_ajuste == "2":
+                     print ("\n   ***AJUSTE DO LIMITE DE SAQUES DIÁRIO***   ")
+                     print(f"Seu Limite de Saques Diário Atual é {LIMITE_SAQUES}")
+                     ajuste_saque_diario = int(input("Digite o Valor para qual deseja alterar: \n"))
+                     LIMITE_SAQUES = ajuste_saque_diario
+                     alteracao_saque += 1
+                     extrato += f'Alteração de valor de Saque Diario para: {LIMITE_SAQUES: d}\n'
+                     print("Limite do Valor de Saque Alterado com Sucesso!") 
 
                 
-                elif opcao_ajuste == "2":
-                 print(" \n")
-                 break
+                    elif opcao_ajuste == "0":
+                     print(" \n")
+                     break
             
     elif opcao == "0":
      print ("ENCERRANDO SISTEMA.... \n OBRIGADO POR SER O NOSSO CLIENTE!!! \n" )
