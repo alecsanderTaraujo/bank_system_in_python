@@ -1,129 +1,222 @@
-MENU = '''
-        BEM VINDO AO SISTEMA DO BANCO       
+import textwrap
 
-[1] DEPÓSITO 
-[2] SACAR
-[3] EXTRATO
-[4] CONFIGURAR LIMITE VALOR DE SAQUE
-[0] SAIR
 
-Digite Opção Desejada:
-=> '''
+def menu():
+    
+    menu = """ \n
+    ====== BEM VINDO AO SISTEMA DO BANCO ======
 
-saldo = 0
-limite = 500
-numero_saques = 0
-alteracao = 0
-alteracao_saque = 0
-LIMITE_SAQUES = 3
-NUMERO_DE_ALTERACAO_LIMITE = 3
-NUMERO_DE_ALTERACAO_DE_SAQUE = 3
-extrato = ""
+    [1]\tDEPÓSITO 
+    [2]\tSACAR
+    [3]\tEXTRATO
+    [4]\tCONFIGURAR LIMITE VALOR DE SAQUE
+    [5]\tCONFIGURAR LIMITE DE SAQUE
+    [6]\tNOVA CONTA
+    [7]\tNOVO USUARIO 
+    [8]\tLISTAR CONTAS
+    [0]\tSAIR
 
-while True:
-    opcao = input (MENU)
+    Digite Opção Desejada:
+    => """
+    return input(textwrap.dedent(menu))
 
-    if opcao == "1":
-        print("   *****DEPÓSITO*****   ")
-        valor = float(input("Informe o Valor que Deseja Depósitar: \n"))
-        if valor > 0:
-            saldo += valor 
-            extrato += f"Depósito: R$ {valor:.2f} Realizado com Sucesso! \n"
-            print("Depósito Realizado com Sucesso! Obrigado por usar nosso Banco!")
+
+def depositar (saldo, valor, extrato):
+    if valor > 0:
+     saldo += valor 
+     extrato += f"Depósito: R$ {valor:.2f} Realizado com Sucesso! \n"
+     print("Depósito Realizado com Sucesso! Obrigado por usar nosso Banco!")
+    
+    else:
+     print("Operação Falhou! Valor Informado Invalido, Valor minimo de Depósito R$ 1,00.")
+    
+    return saldo, extrato
+   
+
+def sacar (saldo, extrato, valor, limite, numero_saques, limite_saques):
+    excedeu_saldo = valor > saldo
+    excedeu_limite = valor > limite
+    excedeu_saques = numero_saques >= limite_saques
+
+    if excedeu_saldo:
+        print("Operação falhou! Saldo insuficiente revise o Valor de Saldo Disponivel na Conta.")
+        extrato += f'Falha ao Tentar Realizar Saque: {valor: .2f} \n'
+
+    elif excedeu_limite:
+        print("Operação falhou! Excedeu o limite do Valor de Saque.")
         
-        else:
-            print("Operação Falhou! Valor Informado Invalido, Valor minimo de Depósito R$ 1,00.")
-        
-    elif opcao == "2":
-        print("   *****SACAR*****   ")
-        valor = float(input("Informe o Valor que Deseja Sacar: \n"))
+    elif excedeu_saques:
+        print("Operação falhou! Número máximo de saques excedido.")
 
+    elif valor > 0:
+        saldo -= valor 
+        extrato += f"Saque: R$ {valor:.2f} Realizado Com Sucesso!\n"
+        numero_saques += 1
+        print("\n=== Saque realizado com sucesso! ===")
+
+    else:
+        print("Operação Falhou! O Valor Informado é Invalido, Valor minimo de Saque R$ 1,00.")
+
+    return saldo, extrato, numero_saques
+
+def exibir_extrato(saldo, extrato):
+    print("\n --------EXTRATO--------")
+    print('Não foram relizadas movimentações.' if not extrato else extrato)
+    print(f"\nSaldo: R$ {saldo:.2f}")
+    print("---------------------------")   
+   
+def criar_usuario(usuarios):
+    cpf = input ("Digite o CPF (somente números) que deseja cadastrar: \n ")
+    usuario = filtrar_usuario(cpf, usuarios)
+
+    if usuario:
+       print("CPF Informado já possui uma conta conosco, verifique os dados ou entre em contato com o Banco. \n")
+       return
+    
+    nome = input ("Digite Seu Nome Completo: \n")
+    data_de_nascimento = input ("Digite sua Data de Nascimento (dd-mm-aaaa): \n")
+    endereco = input ("Informe o Endereço: logradouro,Número,bairro,cidade/sigla estado: \n")
+
+    usuarios.append ({"nome": nome, "data de nascimento": data_de_nascimento, "cpf": cpf , "endereco": endereco,})
+
+    print("=== Usuário criado com sucesso! ===")
+
+   
+def criar_conta(agencia, numero_conta, usuarios):
+   cpf = input ("Informe o Cpf do usuario: \n ")
+   usuario = filtrar_usuario(cpf, usuarios)
+
+   if usuario:
+      print("Conta Criada com Sucesso")
+      return {"agencia": agencia, "numero_conta": numero_conta, "usuario": usuario}
+   
+   print("Usuário não encontrado, Cpf não é nosso cliente. Erro ao Criar Conta. \n")
+
+
+def listar_contas(contas):
+   for conta in contas:
+        linha = f"""\
+            Agência:\t{conta['agencia']}
+            C/C:\t\t{conta['numero_conta']}
+            Titular:\t{conta['usuario']['nome']}
+        """
+        print("=" * 100)
+        print(textwrap.dedent(linha))
+    
+
+def filtrar_usuario(cpf,usuarios):
+   usuarios_filtrados = [usuario for usuario in usuarios if usuario ["cpf"] == cpf]
+   return usuarios_filtrados [0] if usuarios_filtrados else None
+
+def ajustar_limite_saque(limite, extrato, alteracao, NUMERO_DE_ALTERACAO_LIMITE):
+    if  alteracao == NUMERO_DE_ALTERACAO_LIMITE:
+                    
+     print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE LIMITE, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
+     extrato += f'Tentativa de Alteração de Limite NEGADA \n'
+     print (f'Seu Limite de Saque Atual é {limite}')
+     return limite, extrato, alteracao
+    
+    print ("\n   ***AJUSTE DO LIMITE DE VALOR DE SAQUE***   ")
+    print(f"Seu Limite de Saque Atual é {limite}")
+    ajuste_saque = float(input("Digite o Valor para qual deseja alterar: \n"))
+    limite = ajuste_saque
+    alteracao += 1
+    extrato += f'Alteração de valor de Saque Realizada para: R$ {limite:.2f}\n'
+    print("Limite do Valor de Saque Alterado com Sucesso!")  
+    return limite, extrato, alteracao
+    
+def ajustar_limite_saques_diarios(LIMITE_SAQUES, extrato, alteracao_saque, NUMERO_DE_ALTERACAO_DE_SAQUE):
+   if alteracao_saque == NUMERO_DE_ALTERACAO_DE_SAQUE:
+        print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE SAQUES DIÁRIO, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
+        extrato += f'Tentativa de Alteração de SAQUE DIÁRIO NEGADA \n'
+        print (f'Seu Limite de Saques Diário Atual é {LIMITE_SAQUES}')
+        return LIMITE_SAQUES, extrato, alteracao_saque
+   
+   print ("\n   ***AJUSTE DO LIMITE DE SAQUES DIÁRIO***   ")
+   print(f"Seu Limite de Saques Diário Atual é {LIMITE_SAQUES}")
+   ajuste_saque_diario = int(input("Digite o Valor para qual deseja alterar: \n"))
+   LIMITE_SAQUES = ajuste_saque_diario
+   alteracao_saque += 1
+   extrato += f'Alteração de valor de Saque Diario para: {LIMITE_SAQUES: d}\n'
+   print("Limite do Valor de Saque Alterado com Sucesso!") 
+   return LIMITE_SAQUES, extrato, alteracao_saque
+   
+
+
+def main ():
+    
+    AGENCIA = "0001"
+    LIMITE_SAQUES = 3
+    NUMERO_DE_ALTERACAO_LIMITE = 3
+    NUMERO_DE_ALTERACAO_DE_SAQUE = 3
+
+    saldo = 0
+    limite = 500
+    numero_saques = 0
+    alteracao = 0
+    alteracao_saque = 0
+    extrato = ""
+
+    usuarios = []
+    contas = []
+    
+    while True:
+        opcao = menu()
+
+        if opcao == "1":
+            print("   *****DEPÓSITO*****   ")
+            valor = float(input("Informe o Valor que Deseja Depósitar: \n"))
+
+            saldo, extrato = depositar(saldo, valor, extrato)
+        
+        
+        elif opcao == "2":
+            print("   ----- SACAR -----   ")
+            valor = float(input("Informe o Valor que Deseja Sacar: \n"))
+        
+            saldo, extrato, numero_saques = sacar(
+                saldo=saldo,
+                valor=valor,
+                extrato=extrato,
+                limite=limite,
+                numero_saques=numero_saques,
+                limite_saques=LIMITE_SAQUES,
+            )
       
-        excedeu_saldo = valor > saldo
-        excedeu_limite = valor > limite
-        excedeu_saques = numero_saques >= LIMITE_SAQUES
-
-        if excedeu_saldo:
-            print("Operação falhou! Saldo insuficiente revise o Valor de Saldo Disponivel na Conta.")
-            extrato += f'Falha ao Tentar Realizar Saque: {valor: .2f} \n'
-
-        elif excedeu_limite:
-            print("Operação falhou! Excedeu o limite do Valor de Saque.")
         
-        elif excedeu_saques:
-            print("Operação falhou! Número máximo de saques excedido.")
 
-        elif valor > 0:
-            saldo -= valor 
-            extrato += f"Saque: R$ {valor:.2f} Realizado Com Sucesso!\n"
-            numero_saques += 1
-
-        else:
-            print("Operação Falhou! O Valor Informado é Invalido, Valor minimo de Saque R$ 1,00.")
-
-
-    elif opcao == "3":
-        print("\n **********EXTRATO**********")
-        print('Não foram relizadas movimentações.' if not extrato else extrato)
-        print(f"\nSaldo: R$ {saldo:.2f}")
-        print("***************************")   
+        elif opcao == "3":
+         exibir_extrato(saldo, extrato=extrato)
                       
    
 
-    elif opcao == "4":
-            print("   *****AJUSTE SEU LIMITE*****   ")
-            AJUSTE = '''
-        
-         [1] LIMITE DE VALOR DE SAQUE
-         [2] LIMITE DE SAQUES DIÁRIOS
-         [0] RETORNAR AO MENU PRINCIPAL
+        elif opcao == "4":
+            limite, extrato, alteracao = ajustar_limite_saque(limite, extrato, alteracao, NUMERO_DE_ALTERACAO_LIMITE)
+                
+                
+        elif opcao == "5":
+            LIMITE_SAQUES, extrato, alteracao_saque = ajustar_limite_saques_diarios(LIMITE_SAQUES, extrato, alteracao_saque, NUMERO_DE_ALTERACAO_DE_SAQUE)
          
 
-         Digite Opção Desejada:
-         => '''        
-            while True:
-                    opcao_ajuste = input (AJUSTE) 
+        elif opcao == "6":
+            numero_conta = len(contas) + 1
+            conta = criar_conta(AGENCIA, numero_conta, usuarios)
 
-                    if  alteracao > NUMERO_DE_ALTERACAO_LIMITE:
-                    
-                        print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE LIMITE, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
-                        extrato += f'Tentativa de Alteração de Limite NEGADA \n'
-                        print (f'Seu Limite de Saque Atual é {limite}')
-                        break  
-        
-                    if  opcao_ajuste == "1":
-                     print ("\n   ***AJUSTE DO LIMITE DE VALOR DE SAQUE***   ")
-                     print(f"Seu Limite de Saque Atual é {limite}")
-                     ajuste_saque = float(input("Digite o Valor para qual deseja alterar: \n"))
-                     limite = ajuste_saque
-                     alteracao += 1
-                     extrato += f'Alteração de valor de Saque Realizada para: R$ {limite:.2f}\n'
-                     print("Limite do Valor de Saque Alterado com Sucesso!")    
-                
-                
-                    if alteracao_saque > NUMERO_DE_ALTERACAO_DE_SAQUE:
+            if conta:
+                contas.append(conta)
 
-                     print("VOCÊ EXCEDEU O NUMERO MAXIMO DE ALTERAÇÕES DE SAQUES DIÁRIO, FAVOR ENTRAR EM CONTATO COM O SEU GERENTE")
-                     extrato += f'Tentativa de Alteração de SAQUE DIÁRIO NEGADA \n'
-                     print (f'Seu Limite de Saques Diário Atual é {LIMITE_SAQUES}')
-                     break   
+        elif opcao == "7":
+            criar_usuario(usuarios)       
 
-                    if  opcao_ajuste == "2":
-                     print ("\n   ***AJUSTE DO LIMITE DE SAQUES DIÁRIO***   ")
-                     print(f"Seu Limite de Saques Diário Atual é {LIMITE_SAQUES}")
-                     ajuste_saque_diario = int(input("Digite o Valor para qual deseja alterar: \n"))
-                     LIMITE_SAQUES = ajuste_saque_diario
-                     alteracao_saque += 1
-                     extrato += f'Alteração de valor de Saque Diario para: {LIMITE_SAQUES: d}\n'
-                     print("Limite do Valor de Saque Alterado com Sucesso!") 
 
-                
-                    elif opcao_ajuste == "0":
-                     print(" \n")
-                     break
-            
-    elif opcao == "0":
-     print ("ENCERRANDO SISTEMA.... \n OBRIGADO POR SER O NOSSO CLIENTE!!! \n" )
-     break
-else:
- print("Opção Invalida, por favor selecione novamente a opção desejada!")
+        elif opcao == "8":
+            listar_contas(contas)   
+
+        elif opcao == "0":
+            print ("ENCERRANDO SISTEMA.... \n OBRIGADO POR SER O NOSSO CLIENTE!!! \n" )
+            break
+    
+        else:
+            print("Opção Invalida, por favor selecione novamente a opção desejada!")
+
+main()
