@@ -246,13 +246,13 @@ def log_transacao(func):
 def menu():
     menu = """\n
     ================ MENU ================
-    [d]\tDepositar
-    [s]\tSacar
-    [e]\tExtrato
-    [nc]\tNova conta
-    [lc]\tListar contas
-    [nu]\tNovo usuário
-    [q]\tSair
+    [1]\tDepositar
+    [2]\tSacar
+    [3]\tExtrato
+    [4]\tNova conta
+    [5]\tListar contas
+    [6]\tNovo usuário
+    [7]\tSair
     => """
 
     return input(textwrap.dedent(menu))
@@ -388,26 +388,26 @@ def main():
     while True:
         opcao = menu()
 
-        if opcao == "d":
+        if opcao == "1":
             depositar(clientes)
 
-        elif opcao == "s":
+        elif opcao == "2":
             sacar(clientes)
 
-        elif opcao == "e":
+        elif opcao == "3":
             exibir_extrato(clientes)
 
-        elif opcao == "nu":
+        elif opcao == "4":
             criar_cliente(clientes)
 
-        elif opcao == "nc":
+        elif opcao == "5":
             numero_conta = len(contas) + 1
             criar_conta(numero_conta, clientes, contas)
 
-        elif opcao == "lc":
+        elif opcao == "6":
             listar_contas(contas)
 
-        elif opcao == "q":
+        elif opcao == "7":
             break
 
         else:
